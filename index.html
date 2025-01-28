@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,30 +15,33 @@
             margin: 0;
             background-color: #000;
         }
+
         canvas {
             border: 1px solid #fff;
         }
     </style>
 </head>
+
 <body>
     <script>
         let ball;
-        let leftPaddle, rightPaddle;
+        let cpu, player;
 
         function setup() {
             createCanvas(800, 400);
             ball = new Ball();
-            leftPaddle = new Paddle(true);
-            rightPaddle = new Paddle(false);
+            player = new Paddle(true);
+            cpu = new Paddle(false);
         }
 
         function draw() {
             background(50);
             ball.update();
             ball.show();
-            leftPaddle.show();
-            rightPaddle.update();
-            rightPaddle.show();
+            player.update(true);
+            player.show();
+            cpu.update(false);
+            cpu.show();
         }
 
         class Ball {
@@ -59,13 +63,10 @@
                 }
 
                 //if collision with left paddle
-                if (this.x - this.r < leftPaddle.w && this.y > leftPaddle.y && this.y < leftPaddle.y + leftPaddle.h) {
-                    this.xspeed *= -1;
-                }
-
-                //if collision with right paddle
-                if (this.x + this.r > width - rightPaddle.w && this.y > rightPaddle.y && this.y < rightPaddle.y + rightPaddle.h) {
-                    this.xspeed *= -1;
+                let playerCollision = this.x - this.r < player.w && this.y > player.y && this.y < player.y + player.h;
+                let cpuCollision = this.x + this.r > width - cpu.w && this.y > cpu.y && this.y < cpu.y + cpu.h;
+                if (playerCollision || cpuCollision) {
+                    this.xspeed *= -1.1;
                 }
             }
 
@@ -76,15 +77,26 @@
         }
 
         class Paddle {
-            constructor(isLeft) {
+            constructor(isPlayer) {
                 this.w = 10;
                 this.h = 100;
                 this.y = height / 2 - this.h / 2;
-                this.x = isLeft ? 0 : width - this.w;
+                this.x = isPlayer ? 0 : width - this.w;
             }
 
-            update() {
-                this.y = mouseY - this.h / 2;
+            update(isPlayer) {
+                if (isPlayer) {
+                    this.y = mouseY - this.h / 2;
+                }
+                else {
+                    if (ball.y > this.y + this.h / 2) {
+                        this.y += 1;
+                    }
+                    else if (ball.y < this.y + this.h / 2) {
+                        this.y -= 1;
+                    }
+                }
+
                 // limit the paddle movement
                 this.y = constrain(this.y, 0, height - this.h);
             }
@@ -96,4 +108,5 @@
         }
     </script>
 </body>
+
 </html>
