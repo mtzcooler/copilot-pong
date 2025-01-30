@@ -11,6 +11,9 @@ let fundoImage;
 let bounceSound;
 let goalSound;
 
+let playerScore;
+let cpuScore;
+
 function preload() {
     ballImage = loadImage('./img/bola.png');
     playerImage = loadImage('./img/barra02.png');
@@ -22,6 +25,8 @@ function preload() {
 
 function setup() {
     createCanvas(800, 400);
+    playerScore = 0;
+    cpuScore = 0;
     ball = new Ball();
     player = new Paddle(true);
     cpu = new Paddle(false);
@@ -66,6 +71,14 @@ class Ball {
 
         //if collision with right or left wall
         if (this.x < 0 || this.x > screenw) {
+            if (this.x < 0) {
+                cpuScore++;
+            }
+            else {
+                playerScore++;
+            }
+            // add scores to innerHTML of h1 with id="score"
+            document.getElementById('score').innerHTML = "Score&nbsp;<br/>" + playerScore + ' | ' + cpuScore;
             this.reset();
             goalSound.play();
         }
