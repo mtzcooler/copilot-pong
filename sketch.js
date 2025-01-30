@@ -8,12 +8,16 @@ let ballImage;
 let playerImage;
 let cpuImage;
 let fundoImage;
+let bounceSound;
+let goalSound;
 
 function preload() {
     ballImage = loadImage('./img/bola.png');
     playerImage = loadImage('./img/barra02.png');
     cpuImage = loadImage('./img/barra01.png');
     fundoImage = loadImage('./img/fundo2.png');
+    bounceSound = loadSound('./sound/message.oga');
+    goalSound = loadSound('./sound/hum.ogg');
 }
 
 function setup() {
@@ -57,11 +61,13 @@ class Ball {
         if (playerCollision || cpuCollision) {
             this.vx *= -1.1;
             this.va *= -1.1;
+            bounceSound.play();
         }
 
         //if collision with right or left wall
         if (this.x < 0 || this.x > screenw) {
             this.reset();
+            goalSound.play();
         }
     }
 
